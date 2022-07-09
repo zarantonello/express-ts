@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-ts
+spec:
+  selector:
+    matchLabels:
+      run: express-ts
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: express-ts
+    spec:
+      containers:
+        - name: express-ts
+          image: quay.io/tetchell/express-ts:latest
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          tty: true
+          resources:
+              limits:
+                memory: '512Mi'
+                cpu: '1'
+          readinessProbe:
+              httpGet:
+                path: /health
+                port: 3000

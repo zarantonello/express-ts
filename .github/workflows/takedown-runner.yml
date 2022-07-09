@@ -1,0 +1,35 @@
+name: Take down self-hosted runner
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ takedown_runner ]
+
+env:
+  HELM_RELEASE_NAME: express-ts-runner
+
+jobs:
+  takedown-runner:
+    name: Take down runner
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Log in to OpenShift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: tetchell-dev
+
+      - run: helm ls
+
+      # If we were running in the same workflow as the self-hosted runner installation,
+      # we could use ${{ <job>.outputs.helm_release_name }} to get the release name
+      - run: |
+          if helm status ${{ env.HELM_RELEASE_NAME }}; then
+            echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "Release ${{ env.HELM_RELEASE_NAME }} not found"
+          fi
+      - run: helm uninstall ${{ env.HELM_RELEASE_NAME }}
+        if: env.RELEASE_EXISTS == 'true'

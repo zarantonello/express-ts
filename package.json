@@ -1,0 +1,44 @@
+{
+  "name": "express-ts",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tetchel/express-ts.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": "14"
+  },
+  "scripts": {
+    "start": "bin/www",
+    "dev": "export PORT=3003 && nodemon --inspect bin/www",
+    "copy-assets": "node ./copy-assets.js",
+    "ts-compile": "tsc",
+    "ts-watch": "tsc -w",
+    "build": "npm run ts-compile && npm run copy-assets",
+    "clean": "rm -rf node_modules/ out/ dist/",
+    "docker-build": "npm run build && docker build -t express-ts .",
+    "docker-run": "docker run -p 3000:3000 express-ts",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "http-errors": "^1.8.0",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/http-errors": "^1.8.1",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "14",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "nodemon": "^2.0.13",
+    "shelljs": "^0.8.4",
+    "typescript": "^4.4.3"
+  }
+}
